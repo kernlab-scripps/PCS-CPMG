@@ -1,0 +1,42 @@
+#!/bin/bash
+# Sample batchscript to run a serial job on HPC
+#SBATCH --account=doro-lab
+#SBATCH --partition=doro-compute                                # queue to be used
+#SBATCH --qos=medium
+#SBATCH --array=1-50
+#SBATCH --cpus-per-task=1
+
+#ADK="2RH5"
+#mkdir Refinement${SLURM_ARRAY_TASK_ID}
+#cp Input_Files/* Refinement${SLURM_ARRAY_TASK_ID}
+#python Make_Choice.py Refinement${SLURM_ARRAY_TASK_ID}
+cd Refinement${SLURM_ARRAY_TASK_ID}
+#now=$(date +"%T"); echo $now
+#xplor -quiet -notrace -py -o refine.out refine_EM_PCS_Dual.py 
+#now=$(date +"%T"); echo $now
+##xplor -py -o refine.out refine_EM_PCS.py
+#
+##cd ..
+##python Combine_PCS_Probs.py ${SLURM_ARRAY_TASK_ID}
+##cd Refinement${SLURM_ARRAY_TASK_ID}
+#rm refine.out
+#rm "refine_EM_PCS_Dual_##.sa.stats"
+#rm refine_EM_PCS_Dual_ave.pdb
+#rm refine_EM_PCS_Dual_ave.pdb.viols
+#rm -rf PCS_tbl_Files
+#
+## Align 
+#python ../Sa_To_PDB_Indiv.py
+rm -rf Thesius_Alignment
+mkdir Thesius_Alignment
+cd Thesius_Alignment
+cp ../*_Modeled.pdb . 
+cp ../refine_EM_PCS_Dual_0.pdb . 
+/home/jstiller/theseus/theseus_align -s 1-128:164-213 -f *.pdb 
+rm refine_EM_PCS_Dual_0.pdb refine_EM_PCS_Dual_0.pdb.fst *_Modeled.pdb.fst theseus.fasta theseus.filemap theseus.aln theseus_transf.txt theseus_variances.txt theseus_ave.pdb theseus_var_refine_EM_PCS_Dual_0.pdb "theseus_var_"*"_Modeled.pdb" theseus_ML_tree.nxs theseus_LS_tree.nxs theseus_residuals.txt 
+cd ..
+
+# Calculate Likelihood and Structure Statistics: 
+python ../Extract_Information_Indiv.py
+python ../Make_MC_Files_Indiv.py
+rm slurm*

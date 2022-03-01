@@ -1,0 +1,6 @@
+#!/bin/bash
+# Sample batchscript to run a serial job on HPC
+#SBATCH --account=doro-lab
+#SBATCH --partition=doro-compute                                # queue to be used
+
+./Copy_Stat.sh

@@ -1,0 +1,11 @@
+#!/bin/bash
+#SBATCH --account=doro-lab
+#SBATCH --partition=doro-compute                                # queue to be used
+
+
+#./Prepare_For_RMSD.sh
+#python Make_MC_Files.py 
+#python Extract_Information.py
+python Combine_Outputs.py
+./Clean_Up.sh
+rm slurm-* 
